@@ -1,0 +1,9 @@
+charts:
+  - neohoods-landing
+chart-releaser:
+  git-owner: neohoods
+  git-repo: neohoods-landing-helm
+  package-path: .
+  index-path: .
+  pages-branch: gh-pages
+  token: ${{ secrets.GITHUB_TOKEN }}

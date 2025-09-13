@@ -1,0 +1,54 @@
+name: Release Helm Chart
+
+on:
+  push:
+    branches:
+      - main
+    tags:
+      - "v*"
+  workflow_dispatch:
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    if: "!contains(github.event.head_commit.message, '[ci skip]')"
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Configure Git
+        run: |
+          git config user.name "$GITHUB_ACTOR"
+          git config user.email "$GITHUB_ACTOR@users.noreply.github.com"
+
+      - name: Install Helm
+        uses: azure/setup-helm@v3
+        with:
+          version: "3.12.0"
+
+      - name: Run chart-releaser
+        uses: helm/chart-releaser-action@v1.6.0
+        with:
+          charts_dir: .
+          config: cr.yaml
+          charts_repo_url: https://neohoods.github.io/neohoods-landing-helm
+          skip_packaging: false
+          skip_indexing: false
+        env:
+          CR_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Update Chart Version
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        run: |
+          # Update chart version for next release
+          CURRENT_VERSION=$(grep '^version:' Chart.yaml | cut -d' ' -f2)
+          NEW_VERSION=$(echo $CURRENT_VERSION | awk -F. '{$NF = $NF + 1;} 1' | sed 's/ /./g')
+          sed -i "s/^version:.*/version: $NEW_VERSION/" Chart.yaml
+
+          # Commit and push changes
+          git add Chart.yaml
+          git commit -m "Bump chart version to $NEW_VERSION [skip ci]" || exit 0
+          git push origin main || exit 0

@@ -1,0 +1,17 @@
+apiVersion: v2
+name: neohoods-landing
+description: A Helm chart for deploying Neohoods Landing Page
+type: application
+version: 0.1.0
+appVersion: "1.0.0"
+keywords:
+  - neohoods
+  - landing-page
+  - angular
+  - nginx
+home: https://neohoods.com
+sources:
+  - https://github.com/neohoods/neohoods-landing
+maintainers:
+  - name: Quentin Castel
+    email: quentin.castel@neohoods.com
