@@ -1,94 +1,14 @@
 # Default values for neohoods-landing
-# This is a YAML-formatted file.
-# Declare variables to be passed into your templates.
+replicaCount: 1
 
-replicaCount: 2
-image:
-  repository: ghcr.io/neohoods/neohoods-landing
-  pullPolicy: IfNotPresent
-  # Overrides the image tag whose default is the chart appVersion.
-  tag: "latest"
-imagePullSecrets: []
-nameOverride: ""
-fullnameOverride: ""
-serviceAccount:
-  # Specifies whether a service account should be created
-  create: true
-  # Annotations to add to the service account
-  annotations: {}
-  # The name of the service account to use.
-  # If not set and create is true, a name is generated using the fullname template
-  name: ""
-podAnnotations: {}
-podSecurityContext:
-  fsGroup: 2000
-securityContext:
-  capabilities:
-    drop:
-      - ALL
-  readOnlyRootFilesystem: true
-  runAsNonRoot: true
-  runAsUser: 1000
-service:
-  type: ClusterIP
-  port: 80
-  targetPort: 80
-ingress:
-  enabled: true
-  className: "nginx"
-  annotations:
-    cert-manager.io/cluster-issuer: "letsencrypt-prod"
-    nginx.ingress.kubernetes.io/ssl-redirect: "true"
-    nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
-    nginx.ingress.kubernetes.io/backend-protocol: "HTTP"
-  hosts:
-    - host: neohoods.com
-      paths:
-        - path: /
-          pathType: Prefix
-  tls:
-    - secretName: neohoods-landing-tls
-      hosts:
-        - neohoods.com
-resources:
-  limits:
-    cpu: 500m
-    memory: 512Mi
-  requests:
-    cpu: 100m
-    memory: 128Mi
-autoscaling:
-  enabled: false
-  minReplicas: 2
-  maxReplicas: 10
-  targetCPUUtilizationPercentage: 80
-  targetMemoryUtilizationPercentage: 80
-nodeSelector: {}
-tolerations: []
-affinity: {}
-# Health check configuration
-healthCheck:
-  enabled: true
-  path: /health
-  initialDelaySeconds: 30
-  periodSeconds: 10
-  timeoutSeconds: 5
-  failureThreshold: 3
-# Nginx configuration
-nginx:
-  # Custom nginx configuration
-  config: "events {\n    worker_connections 1024;\n}\n\nhttp {\n    include       /etc/nginx/mime.types;\n    default_type  application/octet-stream;\n    \n    sendfile        on;\n    keepalive_timeout  65;\n    \n    # Gzip compression\n    gzip on;\n    gzip_vary on;\n    gzip_min_length 1024;\n    gzip_proxied expired no-cache no-store private must-revalidate auth;\n    gzip_types\n        text/plain\n        text/css\n        text/xml\n        text/javascript\n        application/javascript\n        application/xml+rss\n        application/json;\n    \n    server {\n        listen       80;\n        server_name  localhost;\n        root   /usr/share/nginx/html;\n        index  index.html index.htm;\n        \n        # Security headers\n        add_header X-Frame-Options \"SAMEORIGIN\" always;\n        add_header X-Content-Type-Options \"nosniff\" always;\n        add_header X-XSS-Protection \"1; mode=block\" always;\n        add_header Referrer-Policy \"strict-origin-when-cross-origin\" always;\n        \n        # Angular routing\n        location / {\n            try_files $uri $uri/ /index.html;\n        }\n        \n        # Cache static assets\n        location ~* \\.(js|css|png|jpg|jpeg|gif|ico|svg|woff|woff2|ttf|eot)$ {\n            expires 1y;\n            add_header Cache-Control \"public, immutable\";\n        }\n        \n        # Health check\n        location /health {\n            access_log off;\n            return 200 \"healthy\\n\";\n            add_header Content-Type text/plain;\n        }\n    }\n}\n"
-# Environment variables
-env:
-  NODE_ENV: production
-  API_URL: https://api.neohoods.com
-# Monitoring
-monitoring:
-  enabled: false
-  serviceMonitor:
-    enabled: false
-    interval: 30s
-    path: /metrics
+# Domain configuration
+domain: neohoods.com
+
 frontend:
   image:
-    tag: 0.0.8
+    repository: ghcr.io/neohoods/neohoods-landing-app
+    tag: "0.0.8"
+  service:
+    type: NodePort
+    port: 80
+    nodePort: 30022

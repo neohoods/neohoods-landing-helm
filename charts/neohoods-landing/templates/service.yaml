@@ -1,13 +1,14 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: { { include "neohoods-landing.fullname" . } }
-  labels: { { - include "neohoods-landing.labels" . | nindent 4 } }
+  name: {{ .Release.Name }}-frontend
+  labels:
+    app: {{ .Release.Name }}-frontend
 spec:
-  type: { { .Values.service.type } }
+  type: {{ .Values.frontend.service.type }}
+  selector:
+    app: {{ .Release.Name }}-frontend
   ports:
-    - port: { { .Values.service.port } }
-      targetPort: { { .Values.service.targetPort } }
-      protocol: TCP
-      name: http
-  selector: { { - include "neohoods-landing.selectorLabels" . | nindent 4 } }
+    - port: {{ .Values.frontend.service.port }}
+      targetPort: http
+      nodePort: {{ .Values.frontend.service.nodePort }}
