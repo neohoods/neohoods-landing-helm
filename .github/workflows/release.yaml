@@ -32,11 +32,8 @@ jobs:
       - name: Run chart-releaser
         uses: helm/chart-releaser-action@v1.6.0
         with:
-          charts_dir: .
-          config: cr.yaml
+          charts_dir: charts
           charts_repo_url: https://neohoods.github.io/neohoods-landing-helm
-          skip_packaging: false
-          skip_indexing: false
         env:
           CR_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
@@ -44,11 +41,11 @@ jobs:
         if: github.event_name == 'push' && github.ref == 'refs/heads/master'
         run: |
           # Update chart version for next release
-          CURRENT_VERSION=$(grep '^version:' Chart.yaml | cut -d' ' -f2)
+          CURRENT_VERSION=$(grep '^version:' charts/neohoods-landing/Chart.yaml | cut -d' ' -f2)
           NEW_VERSION=$(echo $CURRENT_VERSION | awk -F. '{$NF = $NF + 1;} 1' | sed 's/ /./g')
-          sed -i "s/^version:.*/version: $NEW_VERSION/" Chart.yaml
+          sed -i "s/^version:.*/version: $NEW_VERSION/" charts/neohoods-landing/Chart.yaml
 
           # Commit and push changes
-          git add Chart.yaml
+          git add charts/neohoods-landing/Chart.yaml
           git commit -m "Bump chart version to $NEW_VERSION [skip ci]" || exit 0
           git push origin master || exit 0
