@@ -1,13 +1,11 @@
 # Default values for neohoods-landing
 replicaCount: 1
-
 # Domain configuration
 domain: neohoods.com
-
 frontend:
   image:
     repository: ghcr.io/neohoods/neohoods-landing-app
-    tag: "0.0.8"
+    tag: 0.0.9
   service:
     type: NodePort
     port: 80
