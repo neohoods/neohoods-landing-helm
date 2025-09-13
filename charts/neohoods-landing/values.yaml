@@ -3,17 +3,14 @@
 # Declare variables to be passed into your templates.
 
 replicaCount: 2
-
 image:
   repository: ghcr.io/neohoods/neohoods-landing
   pullPolicy: IfNotPresent
   # Overrides the image tag whose default is the chart appVersion.
   tag: "latest"
-
 imagePullSecrets: []
 nameOverride: ""
 fullnameOverride: ""
-
 serviceAccount:
   # Specifies whether a service account should be created
   create: true
@@ -22,12 +19,9 @@ serviceAccount:
   # The name of the service account to use.
   # If not set and create is true, a name is generated using the fullname template
   name: ""
-
 podAnnotations: {}
-
 podSecurityContext:
   fsGroup: 2000
-
 securityContext:
   capabilities:
     drop:
@@ -35,12 +29,10 @@ securityContext:
   readOnlyRootFilesystem: true
   runAsNonRoot: true
   runAsUser: 1000
-
 service:
   type: ClusterIP
   port: 80
   targetPort: 80
-
 ingress:
   enabled: true
   className: "nginx"
@@ -58,7 +50,6 @@ ingress:
     - secretName: neohoods-landing-tls
       hosts:
         - neohoods.com
-
 resources:
   limits:
     cpu: 500m
@@ -66,20 +57,15 @@ resources:
   requests:
     cpu: 100m
     memory: 128Mi
-
 autoscaling:
   enabled: false
   minReplicas: 2
   maxReplicas: 10
   targetCPUUtilizationPercentage: 80
   targetMemoryUtilizationPercentage: 80
-
 nodeSelector: {}
-
 tolerations: []
-
 affinity: {}
-
 # Health check configuration
 healthCheck:
   enabled: true
@@ -88,73 +74,14 @@ healthCheck:
   periodSeconds: 10
   timeoutSeconds: 5
   failureThreshold: 3
-
 # Nginx configuration
 nginx:
   # Custom nginx configuration
-  config: |
-    events {
-        worker_connections 1024;
-    }
-
-    http {
-        include       /etc/nginx/mime.types;
-        default_type  application/octet-stream;
-        
-        sendfile        on;
-        keepalive_timeout  65;
-        
-        # Gzip compression
-        gzip on;
-        gzip_vary on;
-        gzip_min_length 1024;
-        gzip_proxied expired no-cache no-store private must-revalidate auth;
-        gzip_types
-            text/plain
-            text/css
-            text/xml
-            text/javascript
-            application/javascript
-            application/xml+rss
-            application/json;
-        
-        server {
-            listen       80;
-            server_name  localhost;
-            root   /usr/share/nginx/html;
-            index  index.html index.htm;
-            
-            # Security headers
-            add_header X-Frame-Options "SAMEORIGIN" always;
-            add_header X-Content-Type-Options "nosniff" always;
-            add_header X-XSS-Protection "1; mode=block" always;
-            add_header Referrer-Policy "strict-origin-when-cross-origin" always;
-            
-            # Angular routing
-            location / {
-                try_files $uri $uri/ /index.html;
-            }
-            
-            # Cache static assets
-            location ~* \.(js|css|png|jpg|jpeg|gif|ico|svg|woff|woff2|ttf|eot)$ {
-                expires 1y;
-                add_header Cache-Control "public, immutable";
-            }
-            
-            # Health check
-            location /health {
-                access_log off;
-                return 200 "healthy\n";
-                add_header Content-Type text/plain;
-            }
-        }
-    }
-
+  config: "events {\n    worker_connections 1024;\n}\n\nhttp {\n    include       /etc/nginx/mime.types;\n    default_type  application/octet-stream;\n    \n    sendfile        on;\n    keepalive_timeout  65;\n    \n    # Gzip compression\n    gzip on;\n    gzip_vary on;\n    gzip_min_length 1024;\n    gzip_proxied expired no-cache no-store private must-revalidate auth;\n    gzip_types\n        text/plain\n        text/css\n        text/xml\n        text/javascript\n        application/javascript\n        application/xml+rss\n        application/json;\n    \n    server {\n        listen       80;\n        server_name  localhost;\n        root   /usr/share/nginx/html;\n        index  index.html index.htm;\n        \n        # Security headers\n        add_header X-Frame-Options \"SAMEORIGIN\" always;\n        add_header X-Content-Type-Options \"nosniff\" always;\n        add_header X-XSS-Protection \"1; mode=block\" always;\n        add_header Referrer-Policy \"strict-origin-when-cross-origin\" always;\n        \n        # Angular routing\n        location / {\n            try_files $uri $uri/ /index.html;\n        }\n        \n        # Cache static assets\n        location ~* \\.(js|css|png|jpg|jpeg|gif|ico|svg|woff|woff2|ttf|eot)$ {\n            expires 1y;\n            add_header Cache-Control \"public, immutable\";\n        }\n        \n        # Health check\n        location /health {\n            access_log off;\n            return 200 \"healthy\\n\";\n            add_header Content-Type text/plain;\n        }\n    }\n}\n"
 # Environment variables
 env:
   NODE_ENV: production
   API_URL: https://api.neohoods.com
-
 # Monitoring
 monitoring:
   enabled: false
@@ -162,3 +89,6 @@ monitoring:
     enabled: false
     interval: 30s
     path: /metrics
+frontend:
+  image:
+    tag: 0.0.8
