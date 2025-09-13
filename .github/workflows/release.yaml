@@ -62,7 +62,7 @@ jobs:
       - name: Deploy updated dependency
         uses: qcastel/github-actions-update-helm@master
         with:
-          branch-name: master
+          branch-name: main
 
           git-release-bot-name: "bot-theopenshelf"
           git-release-bot-email: "bot@theopenshelf.dev"
