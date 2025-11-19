@@ -70,7 +70,7 @@ jobs:
           ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
 
           repository: git@github.com:neohoods/neohoods-saas.git
-          file-path: landing/Chart.yaml
+          file-path: neohoods/landing/Chart.yaml
 
           yaml-paths: "dependencies[0].version"
 
