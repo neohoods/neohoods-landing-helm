@@ -5,7 +5,7 @@ domain: neohoods.com
 frontend:
   image:
     repository: ghcr.io/neohoods/neohoods-landing-app
-    tag: 0.0.10
+    tag: 0.0.12
   service:
     type: NodePort
     port: 80
