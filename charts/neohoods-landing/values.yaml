@@ -7,9 +7,9 @@ frontend:
     repository: ghcr.io/neohoods/neohoods-landing-app
     tag: 0.0.25
   service:
-    type: NodePort
+    type: ClusterIP  # Changed from NodePort to ClusterIP for Ingress compatibility
     port: 80
-    nodePort: 30022
+    nodePort: 30022  # Only used if type is NodePort
 # Node selector configuration
 # By default, no node selector is applied (leave commented or set to null)
 # To apply a node selector, uncomment and set nodeSelector with key-value pairs, e.g.:
