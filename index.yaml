@@ -3,6 +3,27 @@ entries:
   neohoods-landing:
   - apiVersion: v2
     appVersion: 1.0.0
+    created: "2026-01-04T19:30:30.90476378Z"
+    description: A Helm chart for deploying Neohoods Landing Page
+    digest: 41cc4585cbb02a883be772ebf0c9c760a9e7f0e81c6581f63acfcaa4d8d52e8f
+    home: https://neohoods.com
+    keywords:
+    - neohoods
+    - landing-page
+    - angular
+    - nginx
+    maintainers:
+    - email: quentin.castel@neohoods.com
+      name: Quentin Castel
+    name: neohoods-landing
+    sources:
+    - https://github.com/neohoods/neohoods-landing
+    type: application
+    urls:
+    - https://github.com/neohoods/neohoods-landing-helm/releases/download/neohoods-landing-0.1.23/neohoods-landing-0.1.23.tgz
+    version: 0.1.23
+  - apiVersion: v2
+    appVersion: 1.0.0
     created: "2026-01-04T18:12:20.195657049Z"
     description: A Helm chart for deploying Neohoods Landing Page
     digest: 921c73a7fbcb3aa2ec2f657293e03420538689a6aba76821b5b8014260f3d8bc
@@ -463,4 +484,4 @@ entries:
     urls:
     - https://github.com/neohoods/neohoods-landing-helm/releases/download/neohoods-landing-0.1.1/neohoods-landing-0.1.1.tgz
     version: 0.1.1
-generated: "2026-01-04T18:12:20.195773005Z"
+generated: "2026-01-04T19:30:30.904913749Z"
