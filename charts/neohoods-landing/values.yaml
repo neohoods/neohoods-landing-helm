@@ -10,3 +10,9 @@ frontend:
     type: NodePort
     port: 80
     nodePort: 30022
+# Node selector configuration
+# By default, no node selector is applied (leave commented or set to null)
+# To apply a node selector, uncomment and set nodeSelector with key-value pairs, e.g.:
+# nodeSelector:
+#   role: apps
+# nodeSelector: null
